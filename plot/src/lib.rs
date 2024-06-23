@@ -381,11 +381,11 @@ use std::fs::File;
 use std::io;
 use std::num::ParseIntError;
 use std::path::Path;
-use std::process::{Child, Command};
+use std::process::{ Child, Command };
 use std::str;
 
 use crate::data::Matrix;
-use crate::traits::{Configure, Set};
+use crate::traits::{ Configure, Set };
 
 mod data;
 mod display;
@@ -441,17 +441,16 @@ impl Figure {
     fn script(&self) -> Vec<u8> {
         let mut s = String::new();
 
-        s.push_str(&format!(
-            "set output '{}'\n",
-            self.output.display().to_string().replace('\'', "''")
-        ));
+        s.push_str(
+            &format!("set output '{}'\n", self.output.display().to_string().replace('\'', "''"))
+        );
 
         if let Some(width) = self.box_width {
-            s.push_str(&format!("set boxwidth {}\n", width))
+            s.push_str(&format!("set boxwidth {}\n", width));
         }
 
         if let Some(ref title) = self.title {
-            s.push_str(&format!("set title '{}'\n", title))
+            s.push_str(&format!("set title '{}'\n", title));
         }
 
         for axis in self.axes.iter() {
@@ -463,24 +462,24 @@ impl Figure {
         }
 
         if let Some(ref key) = self.key {
-            s.push_str(&key.script())
+            s.push_str(&key.script());
         }
 
         if let Some(alpha) = self.alpha {
-            s.push_str(&format!("set style fill transparent solid {}\n", alpha))
+            s.push_str(&format!("set style fill transparent solid {}\n", alpha));
         }
 
         s.push_str(&format!("set terminal {} dashed", self.terminal.display()));
 
         if let Some((width, height)) = self.size {
-            s.push_str(&format!(" size {}, {}", width, height))
+            s.push_str(&format!(" size {}, {}", width, height));
         }
 
         if let Some(ref name) = self.font {
             if let Some(size) = self.font_size {
-                s.push_str(&format!(" font '{},{}'", name, size))
+                s.push_str(&format!(" font '{},{}'", name, size));
             } else {
-                s.push_str(&format!(" font '{}'", name))
+                s.push_str(&format!(" font '{}'", name));
             }
         }
 
@@ -502,10 +501,12 @@ impl Figure {
                 s.push_str(", ");
             }
 
-            s.push_str(&format!(
-                "'-' binary endian=little record={} format='%float64' using ",
-                data.nrows()
-            ));
+            s.push_str(
+                &format!(
+                    "'-' binary endian=little record={} format='%float64' using ",
+                    data.nrows()
+                )
+            );
 
             let mut is_first_col = true;
             for col in 0..data.ncols() {
@@ -550,10 +551,7 @@ impl Figure {
     }
 
     /// Dumps the script required to produce the figure into `sink`
-    pub fn dump<W>(&mut self, sink: &mut W) -> io::Result<&mut Figure>
-    where
-        W: io::Write,
-    {
+    pub fn dump<W>(&mut self, sink: &mut W) -> io::Result<&mut Figure> where W: io::Write {
         sink.write_all(&self.script())?;
         Ok(self)
     }
@@ -572,8 +570,7 @@ impl Configure<Axis> for Figure {
 
     /// Configures an axis
     fn configure<F>(&mut self, axis: Axis, configure: F) -> &mut Figure
-    where
-        F: FnOnce(&mut axis::Properties) -> &mut axis::Properties,
+        where F: FnOnce(&mut axis::Properties) -> &mut axis::Properties
     {
         if self.axes.contains_key(axis) {
             configure(self.axes.get_mut(axis).unwrap());
@@ -591,8 +588,7 @@ impl Configure<Key> for Figure {
 
     /// Configures the key (legend)
     fn configure<F>(&mut self, _: Key, configure: F) -> &mut Figure
-    where
-        F: FnOnce(&mut key::Properties) -> &mut key::Properties,
+        where F: FnOnce(&mut key::Properties) -> &mut key::Properties
     {
         if self.key.is_some() {
             configure(self.key.as_mut().unwrap());
@@ -616,7 +612,7 @@ impl Set<BoxWidth> for Figure {
     fn set(&mut self, width: BoxWidth) -> &mut Figure {
         let width = width.0;
 
-        assert!(width >= 0.);
+        assert!(width >= 0.0);
 
         self.box_width = Some(width);
         self
@@ -640,7 +636,7 @@ impl Set<FontSize> for Figure {
     fn set(&mut self, size: FontSize) -> &mut Figure {
         let size = size.0;
 
-        assert!(size >= 0.);
+        assert!(size >= 0.0);
 
         self.font_size = Some(size);
         self
@@ -908,10 +904,7 @@ struct Plot {
 }
 
 impl Plot {
-    fn new<S>(data: Matrix, script: &S) -> Plot
-    where
-        S: Script,
-    {
+    fn new<S>(data: Matrix, script: &S) -> Plot where S: Script {
         Plot {
             data,
             script: script.script(),
@@ -947,11 +940,8 @@ impl fmt::Display for VersionError {
                 write!(f, "`gnuplot --version` failed with error message:\n{}", msg)
             }
             VersionError::OutputError => write!(f, "`gnuplot --version` returned invalid utf-8"),
-            VersionError::ParseError(msg) => write!(
-                f,
-                "`gnuplot --version` returned an unparseable version string: {}",
-                msg
-            ),
+            VersionError::ParseError(msg) =>
+                write!(f, "`gnuplot --version` returned an unparseable version string: {}", msg),
         }
     }
 }
@@ -990,8 +980,9 @@ pub fn version() -> Result<Version, VersionError> {
         .output()
         .map_err(VersionError::Exec)?;
     if !command_output.status.success() {
-        let error =
-            String::from_utf8(command_output.stderr).map_err(|_| VersionError::OutputError)?;
+        let error = String::from_utf8(command_output.stderr).map_err(
+            |_| VersionError::OutputError
+        )?;
         return Err(VersionError::Error(error));
     }
 
@@ -1001,16 +992,20 @@ pub fn version() -> Result<Version, VersionError> {
 }
 
 fn parse_version(version_str: &str) -> Result<Version, Option<ParseIntError>> {
-    let mut words = version_str.split_whitespace().skip(1);
-    let mut version = words.next().ok_or(None)?.split('.');
-    let major = version.next().ok_or(None)?.parse()?;
-    let minor = version.next().ok_or(None)?.parse()?;
-    let patchlevel = words.nth(1).ok_or(None)?.to_owned();
+    let mut words = version_str.split_whitespace();
+    words.next(); // Skip the 'gnuplot' word
+
+    let mut version_numbers = words.next().ok_or(None)?.split('.');
+    let major = version_numbers.next().ok_or(None)?.parse()?;
+    let minor = version_numbers.next().ok_or(None)?.parse()?;
+
+    words.next(); // Skip the 'patchlevel' word
+    let patch = words.next().ok_or(None)?.to_owned();
 
     Ok(Version {
         major,
         minor,
-        patch: patchlevel,
+        patch,
     })
 }
 
@@ -1019,22 +1014,26 @@ fn scale_factor(map: &map::axis::Map<axis::Properties>, axes: Axes) -> (f64, f64
     use crate::Axis::*;
 
     match axes {
-        BottomXLeftY => (
-            map.get(BottomX).map_or(1., ScaleFactorTrait::scale_factor),
-            map.get(LeftY).map_or(1., ScaleFactorTrait::scale_factor),
-        ),
-        BottomXRightY => (
-            map.get(BottomX).map_or(1., ScaleFactorTrait::scale_factor),
-            map.get(RightY).map_or(1., ScaleFactorTrait::scale_factor),
-        ),
-        TopXLeftY => (
-            map.get(TopX).map_or(1., ScaleFactorTrait::scale_factor),
-            map.get(LeftY).map_or(1., ScaleFactorTrait::scale_factor),
-        ),
-        TopXRightY => (
-            map.get(TopX).map_or(1., ScaleFactorTrait::scale_factor),
-            map.get(RightY).map_or(1., ScaleFactorTrait::scale_factor),
-        ),
+        BottomXLeftY =>
+            (
+                map.get(BottomX).map_or(1.0, ScaleFactorTrait::scale_factor),
+                map.get(LeftY).map_or(1.0, ScaleFactorTrait::scale_factor),
+            ),
+        BottomXRightY =>
+            (
+                map.get(BottomX).map_or(1.0, ScaleFactorTrait::scale_factor),
+                map.get(RightY).map_or(1.0, ScaleFactorTrait::scale_factor),
+            ),
+        TopXLeftY =>
+            (
+                map.get(TopX).map_or(1.0, ScaleFactorTrait::scale_factor),
+                map.get(LeftY).map_or(1.0, ScaleFactorTrait::scale_factor),
+            ),
+        TopXRightY =>
+            (
+                map.get(TopX).map_or(1.0, ScaleFactorTrait::scale_factor),
+                map.get(RightY).map_or(1.0, ScaleFactorTrait::scale_factor),
+            ),
     }
 }
 
