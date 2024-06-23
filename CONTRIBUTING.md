@@ -6,12 +6,12 @@ The easiest way to contribute to Criterion.<span></span>rs is to use it and repo
 
 Issues, ideas, requests and questions should be posted on the issue tracker at:
 
-https://github.com/bheisler/criterion.rs/issues
+<https://github.com/bheisler/criterion.rs/issues>
 
 ## A Note on Dependency Updates
 
 Criterion.<span></span>rs does not accept pull requests to update dependencies unless specifically
-requested by the maintaner(s). Dependencies are updated manually by the maintainer(s) before each
+requested by the maintainer(s). Dependencies are updated manually by the maintainer(s) before each
 new release.
 
 ## Code
@@ -28,21 +28,21 @@ You'll probably want to install [gnuplot](http://www.gnuplot.info/) as well. See
 
 Then make your changes to the code. When you're done, run the tests:
 
-```
+```bash
 cargo test --all
 cargo bench
 ```
 
 It's a good idea to run `clippy` and fix any warnings as well:
 
-```
+```bash
 rustup component add clippy
 cargo clippy --workspace --all-targets
 ```
 
 Finally, run Rustfmt to maintain a common code style:
 
-```
+```bash
 rustup component add rustfmt-preview
 cargo fmt --all
 ```
@@ -57,16 +57,16 @@ Some things that will increase the chance that your pull request is accepted:
 
 ## Branches
 
-*   PRs with breaking changes are made against the unreleased branch. e.g. branch version-0.4
-*   PRs without breaking changes are made against the master branch.
+* PRs with breaking changes are made against the unreleased branch. e.g. branch version-0.4
+* PRs without breaking changes are made against the master branch.
 
 If you're not sure which branch to use just start with master, as this can be changed during review.
 
-When it is time to release the unreleased branch, a PR is made from the unreleased branch to master. e.g. https://github.com/bheisler/criterion.rs/pull/496
+When it is time to release the unreleased branch, a PR is made from the unreleased branch to master. e.g. <https://github.com/bheisler/criterion.rs/pull/496>
 
 ## Github Labels
 
-Criterion.<span></span>rs uses a simple set of labels to track issues. Most important are the 
+Criterion.<span></span>rs uses a simple set of labels to track issues. Most important are the
 difficulty labels:
 
 * Beginner - Suitable for people new to Criterion.rs, or even new to Rust in general

@@ -1061,7 +1061,7 @@ mod test {
         let version = super::parse_version(string).unwrap();
         assert_eq!(5, version.major);
         assert_eq!(0, version.minor);
-        assert_eq!("7", &version.patch);
+        assert_eq!(7, version.patch);
     }
 
     #[test]
@@ -1070,7 +1070,7 @@ mod test {
         let version = super::parse_version(string).unwrap();
         assert_eq!(5, version.major);
         assert_eq!(2, version.minor);
-        assert_eq!("5a", &version.patch);
+        assert_eq!(5, version.patch);
     }
 
     #[test]
