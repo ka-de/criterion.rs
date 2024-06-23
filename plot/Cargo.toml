@@ -1,15 +1,18 @@
 [package]
-authors = ["Jorge Aparicio <japaricious@gmail.com>", "Brook Heisler <brookheisler@gmail.com>"]
+authors = [
+  "Jorge Aparicio <japaricious@gmail.com>",
+  "Brook Heisler <brookheisler@gmail.com>",
+]
 name = "criterion-plot"
 version = "0.5.0"
 edition = "2018"
 
 description = "Criterion's plotting library"
-repository = "https://github.com/bheisler/criterion.rs"
+repository = "https://github.com/ka-de/criterion.rs"
 readme = "README.md"
 keywords = ["plotting", "gnuplot", "criterion"]
 categories = ["visualization"]
-license = "MIT OR Apache-2.0"
+license = "MIT"
 
 [dependencies]
 cast = "0.3"
