@@ -970,7 +970,7 @@ pub struct Version {
     /// The minor version number
     pub minor: usize,
     /// The patch level
-    pub patch: String,
+    pub patch: usize,
 }
 
 /// Returns `gnuplot` version
@@ -1000,7 +1000,7 @@ fn parse_version(version_str: &str) -> Result<Version, Option<ParseIntError>> {
     let minor = version_numbers.next().ok_or(None)?.parse()?;
 
     words.next(); // Skip the 'patchlevel' word
-    let patch = words.next().ok_or(None)?.to_owned();
+    let patch = words.next().ok_or(None)?.parse()?; // Parse the patch level as an integer
 
     Ok(Version {
         major,
